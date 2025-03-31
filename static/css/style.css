@@ -1,0 +1,134 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.chat-container {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.message-content {
+    white-space: pre-wrap;
+    padding: 0.75rem;
+    border-radius: 1rem;
+}
+
+.message-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.message {
+    margin-bottom: 1rem;
+    max-width: 80%;
+    border-radius: 1rem;
+}
+
+.user-message {
+    margin-left: auto;
+    background-color: #007bff;
+    color: white;
+}
+
+.ai-message {
+    margin-right: auto;
+    background-color: #f1f1f1;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.user-avatar {
+    background-color: #007bff;
+    color: white;
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+.ai-avatar {
+    background-color: #f1f1f1;
+    color: #007bff;
+}
+
+.chat-input {
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.tab-content {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 0.5rem 0.5rem;
+    padding: 1rem;
+}
+
+.day-card {
+    transition: transform 0.2s;
+}
+
+.day-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.activity {
+    border-left: 4px solid #007bff;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+}
+
+.activity:hover {
+    border-left-color: #0056b3;
+}
+
+.btn-outline-primary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.itinerary-header {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 123, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #007bff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .message {
+        max-width: 90%;
+    }
+}
