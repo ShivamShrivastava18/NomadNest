@@ -9,8 +9,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Messages array to keep track of the conversation
     let messages = [];
     
-    // Add initial welcome message
-    addMessage('assistant', "Hi! Welcome to AI Travel Planner! I'm here to help you create a personalized travel itinerary. Tell me about your travel plans - where would you like to go, for how long, and what kinds of activities interest you?");
+    // Add initial welcome message with typing animation
+    setTimeout(() => {
+        addMessage('assistant', "Hi! Welcome to AI Travel Planner! I'm here to help you create a personalized travel itinerary. Tell me about your travel plans - where would you like to go, for how long, and what kinds of activities interest you?", true);
+    }, 500);
     
     // Handle form submission
     chatForm.addEventListener('submit', async function(e) {
@@ -73,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const data = await response.json();
             
-            // Add AI message to chat
+            // Add AI message to chat with typing animation
             let aiMessage = data.message;
             
             // Remove itinerary JSON if present
@@ -81,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 aiMessage = aiMessage.split('ITINERARY_START')[0];
             }
             
-            addMessage('assistant', aiMessage);
+            addMessage('assistant', aiMessage, true);
             
             // Check if itinerary is available
             if (data.itinerary) {
@@ -91,9 +93,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Generate itinerary HTML
                 renderItinerary(data.itinerary);
                 
-                // Switch to itinerary tab
-                const itineraryTabEl = new bootstrap.Tab(itineraryTab);
-                itineraryTabEl.show();
+                // Animate the tab to draw attention
+                itineraryTab.classList.add('animate-pulse');
+                setTimeout(() => {
+                    // Switch to itinerary tab
+                    const itineraryTabEl = new bootstrap.Tab(itineraryTab);
+                    itineraryTabEl.show();
+                    itineraryTab.classList.remove('animate-pulse');
+                }, 1000);
             }
             
         } catch (error) {
@@ -115,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Function to add a message to the chat
-    function addMessage(role, content) {
+    function addMessage(role, content, withTypingEffect = false) {
         // Add message to messages array
         messages.push({ role, content });
         
@@ -132,34 +139,71 @@ document.addEventListener('DOMContentLoaded', function() {
                     <span>U</span>
                 </div>
             `;
+            
+            // Add message to chat
+            chatMessages.appendChild(messageRow);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         } else {
-            messageRow.innerHTML = `
-                <div class="avatar ai-avatar">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
-                    </svg>
-                </div>
-                <div class="message ai-message">
-                    <div class="message-content">${content}</div>
-                </div>
-            `;
+            // For AI messages, we might want a typing effect
+            if (withTypingEffect && content.length > 20) {
+                messageRow.innerHTML = `
+                    <div class="avatar ai-avatar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+                        </svg>
+                    </div>
+                    <div class="message ai-message">
+                        <div class="message-content" id="typing-message"></div>
+                    </div>
+                `;
+                
+                // Add message to chat
+                chatMessages.appendChild(messageRow);
+                
+                // Get the message content element
+                const messageContent = document.getElementById('typing-message');
+                messageContent.removeAttribute('id');
+                
+                // Typing effect
+                let i = 0;
+                const typingSpeed = 10; // ms per character
+                const typingInterval = setInterval(() => {
+                    if (i < content.length) {
+                        messageContent.textContent += content.charAt(i);
+                        i++;
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    } else {
+                        clearInterval(typingInterval);
+                    }
+                }, typingSpeed);
+            } else {
+                messageRow.innerHTML = `
+                    <div class="avatar ai-avatar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+                        </svg>
+                    </div>
+                    <div class="message ai-message">
+                        <div class="message-content">${content}</div>
+                    </div>
+                `;
+                
+                // Add message to chat
+                chatMessages.appendChild(messageRow);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
         }
-        
-        // Add message to chat
-        chatMessages.appendChild(messageRow);
-        
-        // Scroll to bottom
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        
-        // Log for debugging
-        console.log(`Added ${role} message: ${content.substring(0, 50)}...`);
     }
     
-    // Function to render itinerary
+    // Function to render itinerary with animations
     function renderItinerary(itinerary) {
         let html = `
             <div class="itinerary-header mb-4">
-                <h2>${itinerary.destination}</h2>
+                <h2 class="animate__animated animate__fadeIn">${itinerary.destination}</h2>
                 <div class="row mt-3">
                     <div class="col-md-4">
                         <p><strong>Duration:</strong> ${itinerary.duration} days</p>
@@ -187,7 +231,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (itinerary.travelerInfo && itinerary.travelerInfo.preferences) {
             html += `
                 <div class="preferences mt-2">
-                    <p><strong>Preferences:</strong> ${itinerary.travelerInfo.preferences.join(', ')}</p>
+                    <p><strong>Preferences:</strong></p>
+                    <div class="d-flex flex-wrap">
+            `;
+            
+            itinerary.travelerInfo.preferences.forEach(pref => {
+                html += `<span class="badge rounded-pill bg-light text-dark me-2 mb-2">${pref}</span>`;
+            });
+            
+            html += `
+                    </div>
                 </div>
             `;
         }
@@ -238,8 +291,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="days-container mt-3">
         `;
         
-        itinerary.days.forEach(day => {
-            html += renderDay(day);
+        itinerary.days.forEach((day, index) => {
+            html += renderDay(day, index);
         });
         
         html += `
@@ -248,10 +301,10 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         // Individual day tabs
-        itinerary.days.forEach(day => {
+        itinerary.days.forEach((day, index) => {
             html += `
                 <div class="tab-pane fade" id="day-${day.day}" role="tabpanel" aria-labelledby="day-${day.day}-tab">
-                    ${renderDay(day)}
+                    ${renderDay(day, 0)}
                 </div>
             `;
         });
@@ -271,19 +324,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Function to render a day
-    function renderDay(day) {
+    // Function to render a day with animation delay
+    function renderDay(day, index) {
+        const delay = index * 0.1; // Staggered animation
+        
         let html = `
-            <div class="card day-card">
+            <div class="card day-card" style="animation: fade-in 0.5s ease-out ${delay}s both;">
                 <div class="card-header">
                     <h3>Day ${day.day}${day.date ? ` - ${day.date}` : ''}</h3>
                 </div>
                 <div class="card-body">
         `;
         
-        day.activities.forEach(activity => {
+        day.activities.forEach((activity, actIndex) => {
+            const actDelay = delay + (actIndex * 0.05);
             html += `
-                <div class="activity">
+                <div class="activity" style="animation: slide-right 0.5s ease-out ${actDelay}s both;">
                     ${activity.time ? `<p class="text-primary fw-bold">${activity.time}</p>` : ''}
                     <h5>${activity.activity}</h5>
                     ${activity.location ? `<p><strong>Location:</strong> ${activity.location}</p>` : ''}

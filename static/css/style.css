@@ -1,18 +1,161 @@
+:root {
+    --primary: #007bff;
+    --primary-hover: #0056b3;
+    --background: #f8f9fa;
+    --card-bg: #ffffff;
+    --text: #212529;
+    --text-muted: #6c757d;
+    --border: #dee2e6;
+    --user-message-bg: #007bff;
+    --user-message-text: #ffffff;
+    --ai-message-bg: #f1f1f1;
+    --ai-message-text: #212529;
+    --animation-speed: 0.3s;
+}
+
+[data-theme="dark"] {
+    --primary: #0d6efd;
+    --primary-hover: #0a58ca;
+    --background: #121212;
+    --card-bg: #1e1e1e;
+    --text: #e0e0e0;
+    --text-muted: #adb5bd;
+    --border: #343a40;
+    --user-message-bg: #0d6efd;
+    --user-message-text: #ffffff;
+    --ai-message-bg: #2d2d2d;
+    --ai-message-text: #e0e0e0;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
+    background-color: var(--background);
+    color: var(--text);
+    transition: background-color var(--animation-speed), color var(--animation-speed);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Dynamic Background */
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.cloud, .plane {
+    position: absolute;
+    opacity: 0.2;
+    pointer-events: none;
+}
+
+.cloud {
+    animation: float-cloud 60s linear infinite;
+}
+
+.plane {
+    animation: fly-plane 40s linear infinite;
+}
+
+@keyframes float-cloud {
+    0% {
+        transform: translateX(-100px);
+    }
+    100% {
+        transform: translateX(calc(100vw + 100px));
+    }
+}
+
+@keyframes fly-plane {
+    0% {
+        transform: translateX(-100px) translateY(0);
+    }
+    50% {
+        transform: translateX(calc(50vw)) translateY(-50px);
+    }
+    100% {
+        transform: translateX(calc(100vw + 100px)) translateY(0);
+    }
+}
+
+.navbar {
+    background-color: var(--primary) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color var(--animation-speed);
 }
 
 .navbar-brand {
     display: flex;
     align-items: center;
     font-weight: bold;
+    color: white !important;
+}
+
+.theme-toggle {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.card {
+    background-color: var(--card-bg);
+    border-color: var(--border);
+    transition: background-color var(--animation-speed), border-color var(--animation-speed), transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.nav-tabs {
+    border-color: var(--border);
+}
+
+.nav-tabs .nav-link {
+    color: var(--text);
+    transition: color var(--animation-speed);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary);
+    background-color: var(--card-bg);
+    border-color: var(--border) var(--border) var(--card-bg);
 }
 
 .chat-container {
     border-radius: 0.5rem;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    scroll-behavior: smooth;
 }
 
 .message-content {
@@ -26,23 +169,61 @@ body {
     align-items: flex-start;
     margin-bottom: 1rem;
     width: 100%;
+    animation: fade-in 0.3s ease-out;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .message {
     margin-bottom: 1rem;
     max-width: 80%;
     border-radius: 1rem;
+    transition: background-color var(--animation-speed), color var(--animation-speed);
 }
 
 .user-message {
     margin-left: auto;
-    background-color: #007bff;
-    color: white;
+    background-color: var(--user-message-bg);
+    color: var(--user-message-text);
+    animation: slide-left 0.3s ease-out;
 }
 
 .ai-message {
     margin-right: auto;
-    background-color: #f1f1f1;
+    background-color: var(--ai-message-bg);
+    color: var(--ai-message-text);
+    animation: slide-right 0.3s ease-out;
+}
+
+@keyframes slide-right {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-left {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .avatar {
@@ -54,35 +235,71 @@ body {
     justify-content: center;
     margin-right: 10px;
     flex-shrink: 0;
+    transition: background-color var(--animation-speed);
 }
 
 .user-avatar {
-    background-color: #007bff;
-    color: white;
+    background-color: var(--user-message-bg);
+    color: var(--user-message-text);
     margin-left: 10px;
     margin-right: 0;
 }
 
 .ai-avatar {
-    background-color: #f1f1f1;
-    color: #007bff;
+    background-color: var(--ai-message-bg);
+    color: var(--primary);
 }
 
 .chat-input {
     padding: 1rem;
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid var(--border);
+    background-color: var(--card-bg);
+    transition: background-color var(--animation-speed), border-color var(--animation-speed);
+}
+
+.form-control {
+    background-color: var(--card-bg);
+    color: var(--text);
+    border-color: var(--border);
+    transition: background-color var(--animation-speed), color var(--animation-speed), border-color var(--animation-speed);
+}
+
+.form-control:focus {
+    background-color: var(--card-bg);
+    color: var(--text);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.btn-primary:active {
+    transform: scale(0.95);
 }
 
 .tab-content {
-    background-color: white;
-    border: 1px solid #dee2e6;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
     border-top: none;
     border-radius: 0 0 0.5rem 0.5rem;
     padding: 1rem;
+    transition: background-color var(--animation-speed), border-color var(--animation-speed);
 }
 
 .day-card {
-    transition: transform 0.2s;
+    transition: transform 0.2s, background-color var(--animation-speed), border-color var(--animation-speed);
+    background-color: var(--card-bg);
+    border-color: var(--border);
+    margin-bottom: 1.5rem;
 }
 
 .day-card:hover {
@@ -90,27 +307,56 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.card-header {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid var(--border);
+    transition: background-color var(--animation-speed), border-color var(--animation-speed);
+}
+
+[data-theme="dark"] .card-header {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
 .activity {
-    border-left: 4px solid #007bff;
+    border-left: 4px solid var(--primary);
     padding-left: 1rem;
     margin-bottom: 1rem;
+    transition: border-left-color 0.3s;
 }
 
 .activity:hover {
-    border-left-color: #0056b3;
+    border-left-color: var(--primary-hover);
 }
 
 .btn-outline-primary {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: var(--primary);
+    border-color: var(--primary);
+    transition: color 0.2s, background-color 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.btn-outline-primary:hover {
+    color: white;
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:active {
+    transform: scale(0.95);
 }
 
 .itinerary-header {
-    background-color: #f8f9fa;
+    background-color: rgba(0, 123, 255, 0.05);
     padding: 1rem;
     border-radius: 0.5rem;
     margin-bottom: 1rem;
+    transition: background-color var(--animation-speed);
+}
+
+[data-theme="dark"] .itinerary-header {
+    background-color: rgba(13, 110, 253, 0.1);
 }
 
 .loading {
@@ -119,12 +365,35 @@ body {
     height: 20px;
     border: 3px solid rgba(0, 123, 255, 0.3);
     border-radius: 50%;
-    border-top-color: #007bff;
+    border-top-color: var(--primary);
     animation: spin 1s ease-in-out infinite;
 }
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+.preferences .badge {
+    background-color: rgba(0, 123, 255, 0.1);
+    color: var(--primary);
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: background-color var(--animation-speed), color var(--animation-speed);
+    animation: badge-pop 0.3s ease-out;
+}
+
+@keyframes badge-pop {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 @media (max-width: 768px) {
