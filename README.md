@@ -27,3 +27,8 @@ A Flask-based application that uses Groq AI to create personalized travel itiner
 3. The AI will ask follow-up questions to gather all necessary information
 4. Once enough information is collected, the AI will generate a detailed itinerary
 5. View, print, or download your personalized travel plan
+
+## Future Improvements
+
+1. Scrape flight and hotel prices and information for specific dates
+2. Map and directions of places to visit
